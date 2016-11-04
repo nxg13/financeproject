@@ -1,0 +1,298 @@
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/overrides.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="icon" href="/favicon.ico">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+ 
+   <script type="text/javascript">
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart', 'line']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback();
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+        var data = [];
+       getData("year");
+        var options = {
+            titlePosition: 'none',
+                       'width':800,
+            'height':600,
+            hAxis: {
+                title: 'Month'
+            },
+            vAxis: {
+                title: 'Stock Value (USD)'
+            }
+          };
+            
+            
+      function drawChart(dataToDraw) {
+
+        // Create the data table.
+          console.log(data);
+        var chartData = new google.visualization.arrayToDataTable(dataToDraw);        
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(chartData, options);
+            }
+            
+            function getData(dataRange) {
+            
+            var dataArray = [
+                ['Date', 'Stock Value'],  
+            ];
+            var BASE_URL = 'https://query.yahooapis.com/v1/public/yql?q=';
+            var yql_query;
+            
+        
+            if (dataRange == "year") {
+                yql_query = 'select * from yahoo.finance.historicaldata where symbol = "GE" and startDate = "2015-10-18" and endDate = "2016-10-18"';
+          
+            } else if (dataRange == "halfyear") {
+                yql_query = 'select * from yahoo.finance.historicaldata where symbol = "GE" and startDate = "2016-04-18" and endDate = "2016-10-18"';
+          };   
+            var yql_query_str = encodeURI(BASE_URL+yql_query);              
+            var query_str_final = yql_query_str + "&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";  
+
+                
+            $.getJSON(query_str_final, function(data) {
+                var stockArray = data.query.results.quote;
+                for (var i = 0; i < stockArray.length; i++) {
+                    var currentObject = stockArray[i];
+                    console.log(currentObject.Close);
+                    //push values of currentObject.date and currentObject.Close into dataArray
+                    var pushedArray = [currentObject.Date, parseFloat(currentObject.Close)];
+                    dataArray[i+1] = pushedArray;
+              }
+              console.log(dataArray);
+              drawChart(dataArray);
+        
+        });            
+       };
+            
+        
+        function buttonPressed(buttonTitle) {
+            getData(buttonTitle);
+            
+            
+        };
+    </script>
+       
+</head>
+    
+<body>
+<div class="navbar navbar-inverse" role="navigation" id="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle Navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+           
+            <a class="pull-left"><img src="ge.png"></a>
+            <a class="navbar-brand" href="#" id="GE">GE Stock</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="#" id="home">Home</a>    
+                    </li>
+                    <li>                        
+                       <a href='#about' id="about" onclick="buttonPressed('description')">About</a>
+                    </li>
+                    <li>
+                        <a href="#contact" id="contact">Contact</a>
+                    </li>  
+                </ul>
+        </div>
+    </div>
+</div>
+    
+    
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" id="descriptiontitle">About the Company</div>
+    </div>
+</div>
+    <div class="row">
+        <div class="col-md-12" id="description">   General Electric Capital Corporation (GE Capital or GECC) was incorporated in 1943 in the State of New York under the provisions of the New York Banking Law relating to investment companies, as successor to General Electric Contracts Corporation, which was formed in 1932. Until November 1987, our name was General Electric Credit Corporation. On July 2, 2001, we changed our state of incorporation to Delaware. As of December 31, 2014, all of our outstanding common stock was wholly-owned by General Electric Company (GE Company or GE). Financing and services offered by GE Capital are diversified, a significant change from the original business of GE Capital, which was, financing distribution and sale of consumer and other GE products.
+            Our principal executive offices are located at 901 Main Avenue, Norwalk, CT 06851-1168. At December 31, 2014, GECC employed approximately 47,000 persons.</div>
+    </div>    
+    
+    
+<div class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 text-center" id="chartTitle">GE Stock Prices</div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-2" id="chart_div"></div>
+        <div class="col-md-8"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="chartbuttons">
+            <button type="button" class="btn btn-default" onclick="buttonPressed('year')">1y</button>
+            <button type="button" class="btn btn-default" onclick="buttonPressed('halfyear')">6m</button>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <p id="daily"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="change"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="daysH"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="daysL"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="daysR"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="lastT"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="marketC"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="theName"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="stockE"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="theSymbol"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="theVolume"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="yearH"></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p id="yearL"></p>
+        </div>
+    </div>
+</div>
+            
+<script src="js/bootstrap.min.js"></script>
+
+<script>    
+    
+    
+ </script>
+    
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" id="tableTitle">Stock Quote and Summary Data</div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="table"></div>
+ </div>
+   </div>
+    
+<div class="container">
+    <div class="row">
+        <div class="col-md-12"><img src="appliances.png" id="appliances"></div>
+    </div>
+</div>
+    
+
+    
+    
+     
+<script>
+    var nameArray = ["1 Year Target", "Today's High/Low", "Share Volume", "90 Day Avg. Daily Volume", "Previous Close", "52 Week High/Low", "Market cap", "P/E Ratio", "Forward P/E(1y)", "Earnings Per Share (EPS)", "Annualized dividend", "Ex Dividend Date", "Dividend Payment Date", "Current Yield", "Beta"]
+var valueArray = ["34", "$30.11/$29.84", "4,199,182", "32,685,669", "$30.11", "$33/$24.26", "$268,120,091,360", "25.36", "19.94", "$1.18", "$0.92", "Jun. 16, 2016", "Jul. 25, 2016", "3.06%", "1.05"]
+
+var theTable = document.createElement("table");
+var tHead = document.createElement("thead");
+var hRow = document.createElement("tr");
+var hCell1 = document.createElement("td");
+var hCell2 = document.createElement("td");
+var hCell3 = document.createElement("td");
+var hCell4 = document.createElement("td");
+
+hCell1.innerHTML = "";
+hCell2.innerHTML = "";
+
+hRow.appendChild(hCell1);
+hRow.appendChild(hCell2);
+tHead.appendChild(hRow);
+theTable.appendChild(tHead);
+document.getElementById("table").appendChild(theTable);
+
+var tBody = document.createElement("tbody");
+theTable.appendChild(tBody);
+
+
+for (var i=0; i<nameArray.length; i++) {
+	var row = document.createElement("tr");
+	var cell1 = document.createElement("td");
+	var cell2 = document.createElement("td");
+	var links = document.createElement("a");
+
+	cell1.innerHTML = nameArray[i];
+	if (valueArray[i] == "") {
+
+	} else {
+		cell2.innerHTML = valueArray[i];
+
+	}
+
+	links.target = "_blank";
+	links.innerHTML = nameArray[i];
+
+
+	row.appendChild(cell1);
+	row.appendChild(cell2);
+	tBody.appendChild(row);
+}
+
+    </script>  
+
+</body>
+</html>

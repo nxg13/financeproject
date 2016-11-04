@@ -1,0 +1,98 @@
+img {
+    width: 37px;
+    margin-top: 7px;
+}
+
+#navigation {
+    width: 100%;
+}
+
+#GE {
+    margin-left: 25px;
+}
+
+#chartTitle {
+    font-size: 35px;
+    font-weight: bold;
+}
+
+#chartbuttons {
+    margin-left: 47%;
+    padding-top: 20px;
+}
+
+#descriptiontitle {
+    padding-top: 50px;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+#description {
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 25px;
+}
+
+#table {
+    padding-top: 10px;
+    text-align: center;
+    font-size: 20px;
+}
+
+#tabletitle {
+    padding-top: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#appliances {
+    width: 80%;
+    margin-left: 10%;
+    padding-top: 50px;
+}
+
+body {
+    background-color: rgb(168, 238, 255);
+}
+
+table {
+    width: 60%;
+    margin-left: 20%;
+    text-align: center;
+    border: 2px solid black;
+}
+
+tr{
+    width: 60%;
+    margin-left: 20%;
+    font-size: 20px;
+    color: black;
+    text-align: center;
+    border: 2px solid black;
+}
+
+td {
+    width: 60%;
+    margin-left: 20%;
+    border: 2px solid black;
+}
+
+tbody > tr:hover {
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+
+thead {
+    font-weight: bold;
+    font-size: 50px;
+    text-align: center;
+}
+
+
+a {
+    color: black;
+    text-align: center;
+}
